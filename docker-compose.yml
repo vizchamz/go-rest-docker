@@ -3,6 +3,20 @@ version: "3.8"
 services:
   web:
     build: .
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000/",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     env_file:
       - .env
     ports:
@@ -11,7 +25,16 @@ services:
       - .:/usr/src/app
     command: air ./cmd/main.go -b 0.0.0.0
   db:
-    image: postgres:alpine
+    image: postgres:15-alpine
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_DB_USER} -d ${POSTGRES_DB_NAME}",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     environment:
       - POSTGRES_USER=${POSTGRES_DB_USER}
       - POSTGRES_PASSWORD=${POSTGRES_DB_PASSWORD}
