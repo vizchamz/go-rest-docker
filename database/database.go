@@ -19,9 +19,12 @@ type Dbinstance struct {
 var DB Dbinstance
 
 func ConnectDb() {
+	log.Printf("APPLICATION_DB: %s", os.Getenv("APPLICATION_DB"))
+	
 	if os.Getenv("APPLICATION_DB") == "postgres" {
 		dsn := fmt.Sprintf(
-			"host=db user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Colombo",
+			"host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Colombo",
+			os.Getenv("POSTGRES_DB_HOST"),
 			os.Getenv("POSTGRES_DB_USER"),
 			os.Getenv("POSTGRES_DB_PASSWORD"),
 			os.Getenv("POSTGRES_DB_NAME"),

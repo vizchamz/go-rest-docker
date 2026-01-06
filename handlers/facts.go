@@ -25,6 +25,12 @@ func CreateFact(c *fiber.Ctx) error {
         })
     }
 
+    if database.DB.Db == nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "message": "Database connection not established",
+        })
+    }
+
     database.DB.Db.Create(&fact)
 
     return c.Status(200).JSON(fact)
